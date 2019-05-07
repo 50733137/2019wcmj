@@ -1,0 +1,409 @@
+<!DOCTYPE html><html>
+        <head>
+        <title>WCM2019</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700,900" rel="stylesheet">
+        <link rel="stylesheet" href="./../static/chimper/fonts/icomoon/style.css">
+        <link rel="stylesheet" href="./../static/chimper/css/bootstrap.min.css">
+        <link rel="stylesheet" href="./../static/chimper/css/magnific-popup.css">
+        <link rel="stylesheet" href="./../static/chimper/css/jquery-ui.css">
+        <link rel="stylesheet" href="./../static/chimper/css/owl.carousel.min.css">
+        <link rel="stylesheet" href="./../static/chimper/css/owl.theme.default.min.css">
+        <link rel="stylesheet" href="./../static/chimper/css/bootstrap-datepicker.css">
+        <link rel="stylesheet" href="./../static/chimper/fonts/flaticon/font/flaticon.css">
+        <link rel="stylesheet" href="./../static/chimper/css/aos.css">
+        <link rel="stylesheet" href="./../static/chimper/css/style.css">
+        <link rel="shortcut icon" href="./../static/favicons.png">
+        
+        <style type='text/css'>
+            .site-section {
+            background-color: #FFFF;
+            padding: 40px 40px;
+            }
+            body > div > div.dropdown.open {
+                display: block;
+            }
+        </style>
+    
+        <!-- <script src="./../static/jquery.js"></script> -->
+        <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
+        <script src="../static/chimper/js/jquery-3.3.1.min.js"></script>
+        <link rel="stylesheet" href="./../static/tipuesearch/css/normalize.min.css">
+        <script src="./../static/tipuesearch/tipuesearch_set.js"></script>
+        <script src="tipuesearch_content.js"></script>
+        <link rel="stylesheet" href="./../static/tipuesearch/css/tipuesearch.css">
+        <script src="./../static/tipuesearch/tipuesearch.js"></script>
+        <script>
+            /* original tipuesearch
+            $(document).ready(function() {
+                 $('#tipue_search_input').tipuesearch();
+            });
+            */
+            // customed doSearch
+            function doSearch() {
+                $('#tipue_search_input').tipuesearch({
+                    newWindow: true, 
+                    minimumLength: 2,
+                    wholeWords: false, // for search 中文
+                });
+            }
+            $(document).ready(doSearch);
+        </script>
+        
+<script type="text/javascript" src="./../static/syntaxhighlighter/shCore.js"></script>
+<script type="text/javascript" src="./../static/syntaxhighlighter/shBrushJScript.js"></script>
+<script type="text/javascript" src="./../static/syntaxhighlighter/shBrushJava.js"></script>
+<script type="text/javascript" src="./../static/syntaxhighlighter/shBrushPython.js"></script>
+<script type="text/javascript" src="./../static/syntaxhighlighter/shBrushSql.js"></script>
+<script type="text/javascript" src="./../static/syntaxhighlighter/shBrushXml.js"></script>
+<script type="text/javascript" src="./../static/syntaxhighlighter/shBrushPhp.js"></script>
+<script type="text/javascript" src="./../static/syntaxhighlighter/shBrushLua.js"></script>
+<script type="text/javascript" src="./../static/syntaxhighlighter/shBrushCpp.js"></script>
+<script type="text/javascript" src="./../static/syntaxhighlighter/shBrushCss.js"></script>
+<script type="text/javascript" src="./../static/syntaxhighlighter/shBrushCSharp.js"></script>
+<link type="text/css" rel="stylesheet" href="./../static/syntaxhighlighter/css/shCoreDefault.css"/>
+<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+<!-- for LaTeX equations 暫時不用
+<script src="https://scrum-3.github.io/web/math/MathJax.js?config=TeX-MML-AM_CHTML" type="text/javascript"></script>
+<script type="text/javascript">
+init_mathjax = function() {
+    if (window.MathJax) {
+        // MathJax loaded
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+                displayMath: [ ['$$','$$'], ["\\[","\\]"] ]
+            },
+            displayAlign: 'left', // Change this to 'center' to center equations.
+            "HTML-CSS": {
+                styles: {'.MathJax_Display': {"margin": 0}}
+            }
+        });
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub]);
+    }
+}
+init_mathjax();
+</script>
+-->
+<!-- 暫時不用
+<script src="./../static/fengari-web.js"></script>
+<script type="text/javascript" src="./../static/Cango-13v08-min.js"></script>
+<script type="text/javascript" src="./../static/CangoAxes-4v01-min.js"></script>
+<script type="text/javascript" src="./../static/gearUtils-05.js"></script>
+-->
+<!-- for Brython 暫時不用
+<script src="https://scrum-3.github.io/web/brython/brython.js"></script>
+<script src="https://scrum-3.github.io/web/brython/brython_stdlib.js"></script>
+-->
+
+</head>
+<body>
+<div class='container'><nav>
+        
+    <div class="site-wrap">
+
+    <div class="site-mobile-menu">
+      <div class="site-mobile-menu-header">
+        <div class="site-mobile-menu-close mt-3">
+          <span class="icon-close2 js-menu-toggle"></span>
+        </div>
+      </div>
+      <div class="site-mobile-menu-body"></div>
+    </div>
+    
+            <header class="site-navbar py-4 bg-white" role="banner">
+              <div class="container-fluid">
+                <div class="row align-items-center">
+                <h1>2019 Spring 網際內容管理</h1>
+                <div class="pl-4">
+                    <form>
+                    <input type="text" placeholder="Search" name="q" id="tipue_search_input" pattern=".{2,}" title="At least 2 characters" required>
+                    </form>
+                </div>
+                  <!-- <div class="col-11 col-xl-2">
+                    <h1 class="mb-0 site-logo"><a href="index.html" class="text-black h2 mb-0">2019 Spring 網際內容管理</a></h1> 
+                  </div>
+                  -->
+                  <div class="col-12 col-md-10 d-none d-xl-block">
+                    <nav class="site-navigation position-relative text-right" role="navigation">
+    <ul class='site-menu js-clone-nav mr-auto d-none d-lg-block'>
+                        <li class="active has-children"><a href="index.html">Home</a>
+                        <ul class="dropdown">
+                            <li><a href="sitemap.html">Site Map</a></li>
+                            <li><a href="./../reveal/index.html">reveal</a></li>
+                            <li><a href="./../blog/index.html">blog</a></li>
+                        </ul>
+                      </li>
+                     <li class='has-children'><a href='Introduction.html'>Introduction</a><ul class='dropdown'><li><a href='P-Tech.html'>P-Tech</a><li><a href='C-K and future job.html'>C-K and future job</a><li><a href='計算機程式.html'>計算機程式</a><li><a href='全球協同.html'>全球協同</a></li></ul><li class='has-children'><a href='實習任務.html'>實習任務</a><ul class='dropdown'><li class='has-children'><a href='實習任務一.html'>實習任務一</a><ul class='dropdown'><li><a href='task1 Q&A.html'>task1 Q&A</a></li></ul><li class='has-children'><a href='實習項目二.html'>實習項目二</a><ul class='dropdown'><li><a href='ANSI C.html'>ANSI C</a><li><a href='Lua.html'>Lua</a><li><a href='Git 設定.html'>Git 設定</a><li><a href='GIT Tools.html'>GIT Tools</a><li><a href='Blogger API.html'>Blogger API</a><li><a href='Blogger API 應用.html'>Blogger API 應用</a></li></ul><li class='has-children'><a href='實習項目三.html'>實習項目三</a><ul class='dropdown'><li><a href='Bootstrap 網頁.html'>Bootstrap 網頁</a><li><a href='game1.html'>game1</a><li><a href='canvas1.html'>canvas1</a><li><a href='Brython.html'>Brython</a><li><a href='Cango Library.html'>Cango Library</a><li><a href='Ball.html'>Ball</a><li><a href='two.js.html'>two.js</a><li><a href='Konva demo.html'>Konva demo</a><li><a href='matter.js.html'>matter.js</a></li></ul><li><a href='實習項目四.html'>實習項目四</a><li><a href='實習項目五.html'>實習項目五</a></li></ul><li class='has-children'><a href='分組專題.html'>分組專題</a><ul class='dropdown'><li class='has-children'><a href='電腦安裝.html'>電腦安裝</a><ul class='dropdown'><li><a href='建立伺服器.html'>建立伺服器</a></li></ul><li class='has-children'><a href='網路配置.html'>網路配置</a><ul class='dropdown'><li><a href='Proxy Server.html'>Proxy Server</a></li></li></ul></ul><li class='has-children'><a href='程式開發環境.html'>程式開發環境</a><ul class='dropdown'><li><a href='Windows 10.html'>Windows 10</a><li><a href='Ubuntu.html'>Ubuntu</a><li><a href='CentOS.html'>CentOS</a></li></ul><li class='has-children'><a href='CMSimfly 安裝.html'>CMSimfly 安裝</a><ul class='dropdown'><li><a href='Github.html'>Github</a><li><a href='Heroku.html'>Heroku</a><li><a href='自架主機.html'>自架主機</a><li><a href='CMSimfly 開發.html'>CMSimfly 開發</a><li><a href='Front-end.html'>Front-end</a><li><a href='繪圖.html'>繪圖</a><li><a href='ROC flag.html'>ROC flag</a><li><a href='Spur Gears.html'>Spur Gears</a></li></ul><li class='has-children'><a href='相關技術.html'>相關技術</a><ul class='dropdown'><li><a href='Pygrouf.html'>Pygrouf</a><li><a href='Konva.html'>Konva</a><li><a href='X3d.html'>X3d</a><li><a href='Wagtail.html'>Wagtail</a><li class='has-children'><a href='Fossil SCM.html'>Fossil SCM</a><ul class='dropdown'><li><a href='文件檔案管理.html'>文件檔案管理</a></li></ul><li><a href='自動控制.html'>自動控制</a><li><a href='機構模擬.html'>機構模擬</a><li><a href='參考資料.html'>參考資料</a></li>
+                      </ul>
+                </nav>
+              </div>
+              <div class="d-inline-block d-xl-none ml-md-0 mr-auto py-3" style="position: relative; top: 3px;"><a href="#" class="site-menu-toggle js-menu-toggle text-black"><span class="icon-menu h3"></span></a></div>
+              </div>
+
+            </div>
+          </div>
+          
+        </header>
+    <div id="tipue_search_content">ROC flag << <a href='ROC flag.html'>Previous</a> <a href='相關技術.html'>Next</a> >> 相關技術<br /><h1>Spur Gears</h1>
+<!-- 導入 Brython 標準程式庫 -->
+<script src="./../static/brython.js"></script>
+<script src="./../static/brython_stdlib.js"></script>
+<p></p>
+<!-- 啟動 Brython -->
+<script>
+window.onload=function(){
+// 設定 data/py 為共用程式路徑
+brython({debug:1, pythonpath:['./../data/py']});
+}
+</script>
+<p><canvas height="600" id="onegear" width="800"></canvas></p>
+<div height="20" id="onegear_div" width="800"></div>
+<p><input id="n1" type="text" value="13"/><br/> <input id="n2" type="text" value="11"/><br/> <input id="n3" type="text" value="17"/><br/> <button id="button">Set Number of Gears</button></p>
+<script type="text/python3">
+from browser import document as doc
+from browser import html
+import math
+# deg 為角度轉為徑度的轉換因子
+deg = math.pi/180.
+# 定義 Spur 類別
+class Spur(object):
+    def __init__(self, ctx):
+        self.ctx = ctx
+
+    def create_line(self, x1, y1, x2, y2, width=3, fill="red"):
+        self.ctx.beginPath()
+        self.ctx.lineWidth = width
+        self.ctx.moveTo(x1, y1)
+        self.ctx.lineTo(x2, y2)
+        self.ctx.strokeStyle = fill
+        self.ctx.stroke()
+    #
+    # 定義一個繪正齒輪的繪圖函式
+    # midx 為齒輪圓心 x 座標
+    # midy 為齒輪圓心 y 座標
+    # rp 為節圓半徑, n 為齒數
+    # pa 為壓力角 (deg)
+    # 已經針對 n 大於等於 52 齒時的繪圖錯誤修正, 因為 base circle 與齒根圓大小必須進行判斷
+    def Gear(self, midx, midy, rp, n=20, pa=20, color="black"):
+        # 齒輪漸開線分成 15 線段繪製
+        imax = 15
+        # 在輸入的畫布上繪製直線, 由圓心到節圓 y 軸頂點畫一直線
+        self.create_line(midx, midy, midx, midy-rp)
+        # 畫出 rp 圓, 畫圓函式尚未定義
+        #create_oval(midx-rp, midy-rp, midx+rp, midy+rp, width=2)
+        # a 為模數 (代表公制中齒的大小), 模數為節圓直徑(稱為節徑)除以齒數
+        # 模數也就是齒冠大小
+        a=2*rp/n
+        # d 為齒根大小, 為模數的 1.157 或 1.25倍, 這裡採 1.25 倍
+        d=2.5*rp/n
+        # ra 為齒輪的外圍半徑
+        ra=rp+a
+        # 畫出 ra 圓, 畫圓函式尚未定義
+        #create_oval(midx-ra, midy-ra, midx+ra, midy+ra, width=1)
+        # rb 則為齒輪的基圓半徑
+        # 基圓為漸開線長齒之基準圓
+        rb=rp*math.cos(pa*deg)
+        # 畫出 rb 圓 (基圓), 畫圓函式尚未定義
+        #create_oval(midx-rb, midy-rb, midx+rb, midy+rb, width=1)
+        # rd 為齒根圓半徑
+        rd=rp-d
+        # 當 rd 大於 rb 時, 漸開線並非畫至 rb, 而是 rd
+        # 畫出 rd 圓 (齒根圓), 畫圓函式尚未定義
+        #create_oval(midx-rd, midy-rd, midx+rd, midy+rd, width=1)
+        # dr 則為基圓到齒頂圓半徑分成 imax 段後的每段半徑增量大小
+        # 將圓弧分成 imax 段來繪製漸開線
+        # 當 rd 大於 rb 時, 漸開線並非畫至 rb, 而是 rd
+        if rd>rb:
+            dr = (ra-rd)/imax
+        else:
+            dr=(ra-rb)/imax
+        # tan(pa*deg)-pa*deg 為漸開線函數
+        sigma=math.pi/(2*n)+math.tan(pa*deg)-pa*deg
+        for j in range(n):
+            ang=-2.*j*math.pi/n+sigma
+            ang2=2.*j*math.pi/n+sigma
+            lxd=midx+rd*math.sin(ang2-2.*math.pi/n)
+            lyd=midy-rd*math.cos(ang2-2.*math.pi/n)
+            for i in range(imax+1):
+                # 當 rd 大於 rb 時, 漸開線並非畫至 rb, 而是 rd
+                if rd>rb:
+                    r=rd+i*dr
+                else:
+                    r=rb+i*dr
+                theta=math.sqrt((r*r)/(rb*rb)-1.)
+                alpha=theta-math.atan(theta)
+                xpt=r*math.sin(alpha-ang)
+                ypt=r*math.cos(alpha-ang)
+                xd=rd*math.sin(-ang)
+                yd=rd*math.cos(-ang)
+                # i=0 時, 繪線起點由齒根圓上的點, 作為起點
+                if(i==0):
+                    last_x = midx+xd
+                    last_y = midy-yd
+                # 由左側齒根圓作為起點, 除第一點 (xd,yd) 齒根圓上的起點外, 其餘的 (xpt,ypt)則為漸開線上的分段點
+                self.create_line((midx+xpt),(midy-ypt),(last_x),(last_y),fill=color)
+                # 最後一點, 則為齒頂圓
+                if(i==imax):
+                    lfx=midx+xpt
+                    lfy=midy-ypt
+                last_x = midx+xpt
+                last_y = midy-ypt
+            # the line from last end of dedendum point to the recent
+            # end of dedendum point
+            # lxd 為齒根圓上的左側 x 座標, lyd 則為 y 座標
+            # 下列為齒根圓上用來近似圓弧的直線
+            self.create_line((lxd),(lyd),(midx+xd),(midy-yd),fill=color)
+            for i in range(imax+1):
+                # 當 rd 大於 rb 時, 漸開線並非畫至 rb, 而是 rd
+                if rd>rb:
+                    r=rd+i*dr
+                else:
+                    r=rb+i*dr
+                theta=math.sqrt((r*r)/(rb*rb)-1.)
+                alpha=theta-math.atan(theta)
+                xpt=r*math.sin(ang2-alpha)
+                ypt=r*math.cos(ang2-alpha)
+                xd=rd*math.sin(ang2)
+                yd=rd*math.cos(ang2)
+                # i=0 時, 繪線起點由齒根圓上的點, 作為起點
+                if(i==0):
+                    last_x = midx+xd
+                    last_y = midy-yd
+                # 由右側齒根圓作為起點, 除第一點 (xd,yd) 齒根圓上的起點外, 其餘的 (xpt,ypt)則為漸開線上的分段點
+                self.create_line((midx+xpt),(midy-ypt),(last_x),(last_y),fill=color)
+                # 最後一點, 則為齒頂圓
+                if(i==imax):
+                    rfx=midx+xpt
+                    rfy=midy-ypt
+                last_x = midx+xpt
+                last_y = midy-ypt
+            # lfx 為齒頂圓上的左側 x 座標, lfy 則為 y 座標
+            # 下列為齒頂圓上用來近似圓弧的直線
+            self.create_line(lfx,lfy,rfx,rfy,fill=color)
+
+canvas = doc['onegear']
+ctx = canvas.getContext("2d")
+
+# 以 button 驅動的事件函式
+def setgearnumber(e):
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    x = (canvas.width)/2
+    y = (canvas.height)/2
+    if doc["n1"].value.isdigit():
+        n17 = int(doc["n1"].value)
+    else:
+        n17 = 17
+
+    if doc["n2"].value.isdigit():
+        n11 = int(doc["n2"].value)
+    else:
+        n11 = 11
+
+    if doc["n3"].value.isdigit():
+        n13 = int(doc["n3"].value)
+    else:
+        n13 = 13
+
+    # 只使用畫布高度的 80%
+    canvas_size = canvas.height*0.4
+    r17 = canvas_size*n17/(n17+n11+n13)
+    r11 = canvas_size*n11/(n17+n11+n13)
+    r13 = canvas_size*n13/(n17+n11+n13)
+    # 計算各齒輪中心座標
+    x17 = x - r17-r11
+    y17 = y
+
+    x11 = x 
+    y11 = y
+
+    x13 = x + r11+r13
+    y13 = y
+
+    pa = 20
+    # 開始繪製齒輪
+    # 儲存原有的座標系統
+    ctx.save()
+    # 平移到齒輪圓心
+    ctx.translate(x17, y17)
+    # 以齒輪圓心旋轉 90 度, 讓紅色標線在齒輪右側保持水平
+    ctx.rotate(90*deg)
+    # 平移回原來的座標原點
+    ctx.translate(-x17, -y17)
+    gear17 = Spur(ctx).Gear(x17, y17, r17, n17, pa, "blue")
+    # 回復原有的座標系統
+    ctx.restore()
+
+    ctx.save()
+    ctx.translate(x11, y11)
+    # 中間齒輪轉動 -90 度加上一齒, 可以與左側齒輪囓合
+    ctx.rotate(-90*deg-math.pi/n11)
+    ctx.translate(-x11, -y11)
+    gear11 = Spur(ctx).Gear(x11, y11, r11, n11, pa, "blue")
+    ctx.restore()
+
+    ctx.save()
+    ctx.translate(x13, y13)
+    # 右側齒輪轉動 -90 度加上一齒, 可以與原來標線在左側水平的中間齒輪囓合, 但是目前中間齒輪的標線已經轉了 180 度加或減一次
+    # 必須配合兩齒的速比轉換旋轉角, 以便讓中間齒輪與右側齒輪囓合
+    ctx.rotate(-90*deg-math.pi/n13+(180*deg+math.pi/n11)*n11/n13)
+    ctx.translate(-x13, -y13)
+    gear13 = Spur(ctx).Gear(x13, y13, r13, n13, pa, "blue")
+    ctx.restore()
+
+setgearnumber(True)
+
+'''
+div = doc["onegear_div"]
+form = html.FORM()
+input1 = html.INPUT(type="text", id="n1", name="n1", value="13")
+input2 = html.INPUT(type="text", id="n2", name="n2", value="11")
+input3 = html.INPUT(type="text", id="n3", name="n3", value="19")
+div <= input1 + html.BR() + input2 + html.BR() + input3
+'''
+doc['button'].bind('click',setgearnumber)
+</script><br />ROC flag << <a href='ROC flag.html'>Previous</a> <a href='相關技術.html'>Next</a> >> 相關技術</div>
+        
+    <!-- footer -->
+      <div class="container">
+        <div class="row pt-3 mx-auto">
+            <p>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved | This template is made with <i class="icon-heart" aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank" >Colorlib</a>
+            <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </p>
+        </div>
+      </div>
+    <!-- for footer -->
+    
+        </div> <!-- for site wrap -->
+            <!-- <script src="../static/chimper/js/jquery-3.3.1.min.js"></script> -->
+            <script src="../static/chimper/js/jquery-migrate-3.0.1.min.js"></script>
+            <script src="../static/chimper/js/jquery-ui.js"></script>
+            <script src="../static/chimper/js/popper.min.js"></script>
+            <script src="../static/chimper/js/bootstrap.min.js"></script>
+            <script src="../static/chimper/js/owl.carousel.min.js"></script>
+            <script src="../static/chimper/js/jquery.stellar.min.js"></script>
+            <script src="../static/chimper/js/jquery.countdown.min.js"></script>
+            <script src="../static/chimper/js/jquery.magnific-popup.min.js"></script>
+            <script src="../static/chimper/js/bootstrap-datepicker.min.js"></script>
+            <script src="../static/chimper/js/aos.js"></script>
+            <!--
+            <script src="../static/chimper/js/typed.js"></script>
+                    <script>
+                    var typed = new Typed('.typed-words', {
+                    strings: ["Web Apps"," WordPress"," Mobile Apps"],
+                    typeSpeed: 80,
+                    backSpeed: 80,
+                    backDelay: 4000,
+                    startDelay: 1000,
+                    loop: true,
+                    showCursor: true
+                    });
+                    </script>
+            -->
+            <script src="../static/chimper/js/main.js"></script>
+        </body></html>
+        
