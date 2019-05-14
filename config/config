@@ -1,8 +1,8 @@
 # no proxy at home
-ProxyCommand y://PortableGit/mingw64/bin/connect.exe -H 140.130.17.32:3128 %h %p
+ProxyCommand y://PortableGit/mingw64/bin/connect.exe -H 140.130.17.4:3128 %h %p
 
 # for 50733137
-# url =git@github.com:50733137/wcmw11.git
+# url =git@github.com:50733137/2019wcmj.git
 Host github.com
     User git
     Port 22
