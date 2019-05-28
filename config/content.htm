@@ -1,25 +1,17 @@
-<h1>Button</h1>
-<pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false">&lt;p&gt;&lt;button onclick="myFunction()"&gt;Try it&lt;/button&gt;&lt;/p&gt;
-&lt;p id="demo"&gt;&lt;/p&gt;
-&lt;script&gt;// &lt;![CDATA[
-function myFunction() {
-  document.getElementById("demo").innerHTML = Math.floor(Math.random()*51);
-}
-// ]]&gt;&lt;/script&gt;
-</pre>
-<p><br/><br/></p>
+<h1>button</h1>
+<p></p>
 <p><button onclick="myFunction()">Try it</button></p>
 <p id="demo"></p>
 <p>
-<script>// <![CDATA[
+<script>
 function myFunction() {
-  document.getElementById("demo").innerHTML = Math.floor(Math.random()*51);
+  document.getElementById("demo").innerHTML = Math.floor(Math.random()*10);
 }
-// ]]></script>
+</script>
 </p>
 <h1>圖片</h1>
 <p><img alt="" height="501" src="/images/jansen_sympy.png" width="500"/></p>
-<h1>ROC  flag</h1>
+<h1>ROC flag</h1>
 <p></p>
 <!-- 導入 Brython 標準程式庫 -->
 <p>
@@ -29,16 +21,16 @@ function myFunction() {
 <p></p>
 <!-- 啟動 Brython -->
 <p>
-<script>// <![CDATA[
+<script>
 window.onload=function(){
 // 設定 data/py 為共用程式路徑
 brython({debug:1, pythonpath:['./../data/py']});
 }
-// ]]></script>
+</script>
 </p>
 <p><canvas height="400" id="plotarea" width="600"></canvas></p>
 <p>
-<script type="text/python">// <![CDATA[
+<script type="text/python">
 # 導入 doc
 from browser import document as doc
 import math
@@ -90,11 +82,11 @@ ctx.closePath()
 # 填色設為白色
 ctx.fillStyle = '#fff'
 ctx.fill()
-// ]]></script>
+</script>
 </p>
 <p><canvas height="400" id="plotarea2" width="600"></canvas></p>
 <p>
-<script type="text/python">// <![CDATA[
+<script type="text/python">
 # 導入 doc
 from browser import document as doc
 import math
@@ -146,5 +138,5 @@ ctx.closePath()
 # 填色設為白色
 ctx.fillStyle = '#fff'
 ctx.fill()
-// ]]></script>
+</script>
 </p>
