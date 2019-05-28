@@ -1,28 +1,39 @@
+<h1>虛擬主機</h1>
+<p><img alt="" height="429" src="/images/VirtualBox_rLYBSZC66k.png" width="491"/></p>
+<p><img alt="" height="373" src="/images/VirtualBox_BRVwRxKDOa.png" width="500"/></p>
+<p></p>
 <h1>button</h1>
 <p></p>
 <p><button onclick="myFunction()">Try it</button></p>
 <p id="demo"></p>
+<p>
 <script>
 function myFunction() {
   document.getElementById("demo").innerHTML = Math.floor(Math.random()*10);
 }
 </script>
+</p>
 <h1>圖片</h1>
 <p><img alt="" height="501" src="/images/jansen_sympy.png" width="500"/></p>
 <h1>ROC flag</h1>
 <p></p>
 <!-- 導入 Brython 標準程式庫 -->
+<p>
 <script src="/static/brython.js"></script>
 <script src="/static/brython_stdlib.js"></script>
+</p>
 <p></p>
 <!-- 啟動 Brython -->
+<p>
 <script>
 window.onload=function(){
 // 設定 data/py 為共用程式路徑
 brython({debug:1, pythonpath:['./../data/py']});
 }
 </script>
+</p>
 <p><canvas height="400" id="plotarea" width="600"></canvas></p>
+<p>
 <script type="text/python">
 # 導入 doc
 from browser import document as doc
@@ -76,7 +87,9 @@ ctx.closePath()
 ctx.fillStyle = '#fff'
 ctx.fill()
 </script>
+</p>
 <p><canvas height="400" id="plotarea2" width="600"></canvas></p>
+<p>
 <script type="text/python">
 # 導入 doc
 from browser import document as doc
@@ -130,6 +143,4 @@ ctx.closePath()
 ctx.fillStyle = '#fff'
 ctx.fill()
 </script>
-<h1>簡介</h1>
-<p>CMSimfly (<a href="https://github.com/chiamingyen/cmsimfly">https://github.com/chiamingyen/cmsimfly)</a> 是一套簡單的網際內容管理系統, 採用 Flask 網際框架, 以 Beautifulsoup 解讀分頁內容.</p>
-<p><img alt="" height="471" src="/images/gocycle4.png" width="587"/></p>
+</p>
