@@ -136,7 +136,7 @@ init_mathjax();
                             <li><a href="./../blog/index.html">blog</a></li>
                         </ul>
                       </li>
-                     <li><a href='期末報告.html'>期末報告</a><li><a href='期中報告.html'>期中報告</a><li><a href='虛擬主機.html'>虛擬主機</a><li><a href='圖片.html'>圖片</a><li><a href='Button.html'>Button</a><li><a href='網路設定.html'>網路設定</a><li><a href='ROC  flag.html'>ROC  flag</a></li>
+                     <li><a href='期末報告.html'>期末報告</a><li><a href='期中報告.html'>期中報告</a><li><a href='虛擬主機.html'>虛擬主機</a><li><a href='圖片.html'>圖片</a><li><a href='Button.html'>Button</a><li><a href='網路設定.html'>網路設定</a><li><a href='ROC flag.html'>ROC flag</a></li>
                       </ul>
                 </nav>
               </div>
@@ -147,29 +147,24 @@ init_mathjax();
           </div>
            
         </header>
-    <div id="tipue_search_content">網路設定 << <a href='網路設定.html'>Previous</a> <br /><h1>ROC  flag</h1>
+    <div id="tipue_search_content">網路設定 << <a href='網路設定.html'>Previous</a> <br /><h1>ROC flag</h1>
 <pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false">&lt;!-- 導入 Brython 標準程式庫 --&gt;
-&lt;p&gt;
 &lt;script src="/static/brython.js"&gt;&lt;/script&gt;
 &lt;script src="/static/brython_stdlib.js"&gt;&lt;/script&gt;
-&lt;/p&gt;
 &lt;p&gt;&lt;/p&gt;
 &lt;!-- 啟動 Brython --&gt;
-&lt;p&gt;
 &lt;script&gt;// &lt;![CDATA[
 window.onload=function(){
 // 設定 data/py 為共用程式路徑
 brython({debug:1, pythonpath:['./../data/py']});
 }
 // ]]&gt;&lt;/script&gt;
-&lt;/p&gt;
 &lt;p&gt;&lt;canvas height="400" id="plotarea" width="600"&gt;&lt;/canvas&gt;&lt;/p&gt;
-&lt;p&gt;
 &lt;script type="text/python"&gt;// &lt;![CDATA[
 # 導入 doc
 from browser import document as doc
 import math
-  
+
 # 準備繪圖畫布
 canvas = doc["plotarea"]
 ctx = canvas.getContext("2d")
@@ -218,14 +213,12 @@ ctx.closePath()
 ctx.fillStyle = '#fff'
 ctx.fill()
 // ]]&gt;&lt;/script&gt;
-&lt;/p&gt;
 &lt;p&gt;&lt;canvas height="400" id="plotarea2" width="600"&gt;&lt;/canvas&gt;&lt;/p&gt;
-&lt;p&gt;
 &lt;script type="text/python"&gt;// &lt;![CDATA[
 # 導入 doc
 from browser import document as doc
 import math
-  
+
 # 準備繪圖畫布
 canvas = doc["plotarea2"]
 ctx = canvas.getContext("2d")
@@ -273,30 +266,26 @@ ctx.closePath()
 # 填色設為白色
 ctx.fillStyle = '#fff'
 ctx.fill()
-// ]]&gt;&lt;/script&gt;
-&lt;/p&gt;</pre>
+// ]]&gt;&lt;/script&gt;</pre>
+<p><span> </span></p>
+<p></p>
 <!-- 導入 Brython 標準程式庫 -->
-<p>
 <script src="/static/brython.js"></script>
 <script src="/static/brython_stdlib.js"></script>
-</p>
 <p></p>
 <!-- 啟動 Brython -->
-<p>
 <script>
 window.onload=function(){
 // 設定 data/py 為共用程式路徑
 brython({debug:1, pythonpath:['./../data/py']});
 }
 </script>
-</p>
 <p><canvas height="400" id="plotarea" width="600"></canvas></p>
-<p>
 <script type="text/python">
 # 導入 doc
 from browser import document as doc
 import math
-  
+
 # 準備繪圖畫布
 canvas = doc["plotarea"]
 ctx = canvas.getContext("2d")
@@ -345,14 +334,12 @@ ctx.closePath()
 ctx.fillStyle = '#fff'
 ctx.fill()
 </script>
-</p>
 <p><canvas height="400" id="plotarea2" width="600"></canvas></p>
-<p>
 <script type="text/python">
 # 導入 doc
 from browser import document as doc
 import math
-  
+
 # 準備繪圖畫布
 canvas = doc["plotarea2"]
 ctx = canvas.getContext("2d")
@@ -400,8 +387,7 @@ ctx.closePath()
 # 填色設為白色
 ctx.fillStyle = '#fff'
 ctx.fill()
-</script>
-</p><br />網路設定 << <a href='網路設定.html'>Previous</a> </div>
+</script><br />網路設定 << <a href='網路設定.html'>Previous</a> </div>
          
     <!-- footer -->
       <div class="container">

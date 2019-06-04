@@ -1,15 +1,18 @@
-<h1>期末報告</h1>
-<h1>期中報告</h1>
-<p></p>
+<h1><span>期末報告</span></h1>
+<p><span></span></p>
+<p><span></span></p>
+<h1><span>期中報告</span></h1>
+<p><span></span></p>
 <p><iframe allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen" frameborder="0" height="315" src="https://www.youtube.com/embed/NBEf_GLtFKg" width="560"></iframe></p>
-<h1>虛擬主機</h1>
-<p><img alt="" height="373" src="/images/VirtualBox_BRVwRxKDOa.png" width="500"/></p>
-<p><img alt="" height="437" src="/images/VirtualBox_rLYBSZC66k.png" width="500"/></p>
-<p><img alt="" height="244" src="/images/VirtualBoxVM_mHhhp2endx.png" width="500"/></p>
-<h1>圖片</h1>
-<p><img alt="" height="401" src="/images/gocycle4.png" width="500"/></p>
-<p><img alt="" height="501" src="/images/jansen_sympy.png" width="500"/></p>
-<h1>Button</h1>
+<h1><span>虛擬主機</span></h1>
+<p><span><img alt="" height="373" src="/images/VirtualBox_BRVwRxKDOa.png" width="500"/></span></p>
+<p><span><img alt="" height="437" src="/images/VirtualBox_rLYBSZC66k.png" width="500"/></span></p>
+<p><span><img alt="" height="244" src="/images/VirtualBoxVM_mHhhp2endx.png" width="500"/></span></p>
+<h1><span>圖片</span></h1>
+<p><span><img alt="" height="501" src="/images/jansen_sympy.png" width="500"/></span></p>
+<h1><span>Button</span></h1>
+<div>
+<div class="syntaxhighlighter html" id="highlighter_756406">
 <pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false">&lt;p&gt;&lt;button onclick="myFunction()"&gt;Try it&lt;/button&gt;&lt;/p&gt;
 &lt;p id="demo"&gt;&lt;/p&gt;
 &lt;script&gt;// &lt;![CDATA[
@@ -18,38 +21,40 @@ function myFunction() {
 }
 // ]]&gt;&lt;/script&gt;
 </pre>
+<p></p>
+</div>
+</div>
+<p></p>
 <p><button onclick="myFunction()">Try it</button></p>
 <p id="demo"></p>
 <script>
 function myFunction() {
-  document.getElementById("demo").innerHTML = Math.floor(Math.random()*51);
+  document.getElementById("demo").innerHTML = Math.floor(Math.random()*10);
 }
 </script>
-<h1>網路設定</h1>
-<p></p>
-<h1>ROC  flag</h1>
+<h1><span>網路設定</span></h1>
+<p><span><img alt="" height="150" src="/images/chrome_wbEj37vUR6.png" width="500"/></span></p>
+<p><span><img alt="" height="553" src="/images/rundll32_yMZoNPoBIo.png" width="500"/></span></p>
+<p><span><img alt="" height="401" src="/images/rundll32_dEtsQ0xYum.png" width="500"/></span></p>
+<p><span><img alt="" height="578" src="/images/rundll32_JfK4P4Ypwf.png" width="500"/></span></p>
+<h1><span>ROC flag </span></h1>
 <pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false">&lt;!-- 導入 Brython 標準程式庫 --&gt;
-&lt;p&gt;
 &lt;script src="/static/brython.js"&gt;&lt;/script&gt;
 &lt;script src="/static/brython_stdlib.js"&gt;&lt;/script&gt;
-&lt;/p&gt;
 &lt;p&gt;&lt;/p&gt;
 &lt;!-- 啟動 Brython --&gt;
-&lt;p&gt;
 &lt;script&gt;// &lt;![CDATA[
 window.onload=function(){
 // 設定 data/py 為共用程式路徑
 brython({debug:1, pythonpath:['./../data/py']});
 }
 // ]]&gt;&lt;/script&gt;
-&lt;/p&gt;
 &lt;p&gt;&lt;canvas height="400" id="plotarea" width="600"&gt;&lt;/canvas&gt;&lt;/p&gt;
-&lt;p&gt;
 &lt;script type="text/python"&gt;// &lt;![CDATA[
 # 導入 doc
 from browser import document as doc
 import math
-  
+
 # 準備繪圖畫布
 canvas = doc["plotarea"]
 ctx = canvas.getContext("2d")
@@ -98,14 +103,12 @@ ctx.closePath()
 ctx.fillStyle = '#fff'
 ctx.fill()
 // ]]&gt;&lt;/script&gt;
-&lt;/p&gt;
 &lt;p&gt;&lt;canvas height="400" id="plotarea2" width="600"&gt;&lt;/canvas&gt;&lt;/p&gt;
-&lt;p&gt;
 &lt;script type="text/python"&gt;// &lt;![CDATA[
 # 導入 doc
 from browser import document as doc
 import math
-  
+
 # 準備繪圖畫布
 canvas = doc["plotarea2"]
 ctx = canvas.getContext("2d")
@@ -153,30 +156,26 @@ ctx.closePath()
 # 填色設為白色
 ctx.fillStyle = '#fff'
 ctx.fill()
-// ]]&gt;&lt;/script&gt;
-&lt;/p&gt;</pre>
+// ]]&gt;&lt;/script&gt;</pre>
+<p><span> </span></p>
+<p></p>
 <!-- 導入 Brython 標準程式庫 -->
-<p>
 <script src="/static/brython.js"></script>
 <script src="/static/brython_stdlib.js"></script>
-</p>
 <p></p>
 <!-- 啟動 Brython -->
-<p>
 <script>
 window.onload=function(){
 // 設定 data/py 為共用程式路徑
 brython({debug:1, pythonpath:['./../data/py']});
 }
 </script>
-</p>
 <p><canvas height="400" id="plotarea" width="600"></canvas></p>
-<p>
 <script type="text/python">
 # 導入 doc
 from browser import document as doc
 import math
-  
+
 # 準備繪圖畫布
 canvas = doc["plotarea"]
 ctx = canvas.getContext("2d")
@@ -225,14 +224,12 @@ ctx.closePath()
 ctx.fillStyle = '#fff'
 ctx.fill()
 </script>
-</p>
 <p><canvas height="400" id="plotarea2" width="600"></canvas></p>
-<p>
 <script type="text/python">
 # 導入 doc
 from browser import document as doc
 import math
-  
+
 # 準備繪圖畫布
 canvas = doc["plotarea2"]
 ctx = canvas.getContext("2d")
@@ -281,4 +278,3 @@ ctx.closePath()
 ctx.fillStyle = '#fff'
 ctx.fill()
 </script>
-</p>
