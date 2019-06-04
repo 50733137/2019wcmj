@@ -1,5 +1,5 @@
 /*===================================================================
-  Filename: CangoAxes-4v01.js
+  Filename: CangoAxes-4v04.js
   Rev 4
   By: Dr A.R.Collins
 
@@ -28,6 +28,10 @@
   15Jul17 bugfix: vectorText lineCap must be "round"              ARC
   17Jun17 Update to use Cango Ver 11                              ARC
   30Oct17 bugfix: toEngPrec                                       ARC
+  01Jun18 bugfix: maxX and maxY labels going past end of axis     ARC
+  05Jun18 Avoid infinite 'while' loops: use 'for' loop
+          and return ticStep=undefined for  with bad Min, Mmax    ARC
+  09Jun10 Use 1.000001 allowance for floating point noise errors  ARC 
  ====================================================================*/
 
 var sprintf, toEngFixed, toEngPrec;
@@ -164,8 +168,8 @@ Cango = (function(CangoCore)
         spanexp, stepexp;
 
     this.tic1 = 0;
-    this.ticStep = 0;
-    this.lblStep = 0;
+    this.ticStep = undefined;   // avoid ticStep = 0 to avoid stepping by zero creating infinite loops
+    this.lblStep = undefined;
 
     if (mn>=mx)
     {
@@ -710,7 +714,8 @@ Cango = (function(CangoCore)
       	lbl, lbl2 = "/div",
         tickCmds,
         tickRot = (this.yDown)? -90: 90,
-    		xTics, yTics,
+        xTics, yTics,
+        i,
         parms = {
           xMinTic: "auto",
           yMinTic: "auto",
@@ -792,9 +797,12 @@ Cango = (function(CangoCore)
       fontSize:parms.fontSize,
       fontWeight:parms.fontWeight,
       fontFamily:parms.fontFamily });
-  	while(x+xTics.ticStep <= 1.05*xMax)
+    // avoid infinite 'while' loops like this: 	while(x+xTics.ticStep <= xMax)
+    for (i=0; i<20; i++)
     {
-  		x += xTics.ticStep;
+      x += xTics.ticStep;
+      if (x+xTics.ticStep > xMax*1.000001)  // handle floating point noise
+        break;
     }
     lorg = (this.yDown)? 9: 3;
     pos = this.toPixelCoords(x, yMin);
@@ -818,9 +826,12 @@ Cango = (function(CangoCore)
       fontSize:parms.fontSize,
       fontWeight:parms.fontWeight,
       fontFamily:parms.fontFamily });
-  	while (y + yTics.ticStep <= 1.05*yMax)
+    // avoid infinite 'while' loops like this: 	while(y+yTics.ticStep <= yMax)
+    for (i=0; i<20; i++)
     {
-			y += yTics.ticStep;
+      y += yTics.ticStep;
+      if (y + yTics.ticStep > yMax*1.000001)  // handle floating point noise
+        break;
     }
     this.drawText(engNotation(y), {
       x:xMin - yLblOfs,
