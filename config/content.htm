@@ -1,34 +1,29 @@
-<h1>1234</h1>
+<h1>期中報告</h1>
+<p></p>
+<p><iframe allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen" frameborder="0" height="315" src="https://www.youtube.com/embed/NBEf_GLtFKg" width="560"></iframe></p>
 <h1>虛擬主機</h1>
-<p><img alt="" height="429" src="/images/VirtualBox_rLYBSZC66k.png" width="491"/></p>
 <p><img alt="" height="373" src="/images/VirtualBox_BRVwRxKDOa.png" width="500"/></p>
-<p><img alt="" height="301" src="/images/VirtualBoxVM_mHhhp2endx.png" width="616"/></p>
-<p></p>
-<h1>button</h1>
-<p></p>
-<p><button onclick="myFunction()">Try it</button></p>
+<p><img alt="" height="437" src="/images/VirtualBox_rLYBSZC66k.png" width="500"/></p>
+<p><img alt="" height="244" src="/images/VirtualBoxVM_mHhhp2endx.png" width="500"/></p>
+<h1>圖片</h1>
+<p><img alt="" height="501" src="/images/jansen_sympy.png" width="500"/></p>
+<h1>Button</h1>
 <pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false">&lt;p&gt;&lt;button onclick="myFunction()"&gt;Try it&lt;/button&gt;&lt;/p&gt;
 &lt;p id="demo"&gt;&lt;/p&gt;
-&lt;p&gt;
-&lt;script&gt;
+&lt;script&gt;// &lt;![CDATA[
 function myFunction() {
   document.getElementById("demo").innerHTML = Math.floor(Math.random()*51);
 }
-&lt;/script&gt;
-&lt;/p&gt;
+// ]]&gt;&lt;/script&gt;
 </pre>
-<p id="demo"><br/><br/></p>
-<p></p>
-<p>
+<p><button onclick="myFunction()">Try it</button></p>
+<p id="demo"></p>
 <script>
 function myFunction() {
   document.getElementById("demo").innerHTML = Math.floor(Math.random()*51);
 }
 </script>
-</p>
-<h1>圖片</h1>
-<p><img alt="" height="501" src="/images/jansen_sympy.png" width="500"/></p>
-<h1>ROC flag</h1>
+<h1>ROC  flag</h1>
 <pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false">&lt;!-- 導入 Brython 標準程式庫 --&gt;
 &lt;p&gt;
 &lt;script src="/static/brython.js"&gt;&lt;/script&gt;
@@ -50,7 +45,7 @@ brython({debug:1, pythonpath:['./../data/py']});
 # 導入 doc
 from browser import document as doc
 import math
-
+  
 # 準備繪圖畫布
 canvas = doc["plotarea"]
 ctx = canvas.getContext("2d")
@@ -106,7 +101,7 @@ ctx.fill()
 # 導入 doc
 from browser import document as doc
 import math
-
+  
 # 準備繪圖畫布
 canvas = doc["plotarea2"]
 ctx = canvas.getContext("2d")
@@ -156,7 +151,6 @@ ctx.fillStyle = '#fff'
 ctx.fill()
 // ]]&gt;&lt;/script&gt;
 &lt;/p&gt;</pre>
-<p></p>
 <!-- 導入 Brython 標準程式庫 -->
 <p>
 <script src="/static/brython.js"></script>
@@ -178,7 +172,7 @@ brython({debug:1, pythonpath:['./../data/py']});
 # 導入 doc
 from browser import document as doc
 import math
-
+  
 # 準備繪圖畫布
 canvas = doc["plotarea"]
 ctx = canvas.getContext("2d")
@@ -234,7 +228,7 @@ ctx.fill()
 # 導入 doc
 from browser import document as doc
 import math
-
+  
 # 準備繪圖畫布
 canvas = doc["plotarea2"]
 ctx = canvas.getContext("2d")

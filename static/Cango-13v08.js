@@ -1,5 +1,5 @@
 /*==========================================================================
-  Filename: Cango-13v16.js
+  Filename: Cango-13v08.js
   Rev: 13
   By: A.R.Collins
   Description: A graphics library for the canvas element.
@@ -44,19 +44,6 @@
           Removed DrawCmd as a n object type                             ARC
   21Mar18 Removed cgo2DToDrawCmds and svgToDrawCmds                      ARC
   22Mar18 Include the minified polyfill rather than use a separate file  ARC 
-  01Jun18 Avoid changing Obj input data array by inserting 'M'           ARC
-  22Jun18 Added clearShape method                                        ARC
-  23Jun18 Added distortFns to avoid functions as parameters because
-          JSON.stringify in clone ignores them                           ARC
-  10Jul18 Added support for canvas as an Img object input type           ARC
-  11Jul18 Use globalCompositionOperation to clearShape                   ARC
-  13Jul18 bugfix: vpOrgY nto rest when switching between RHC and SVG     ARC
-  14Jul18 Enforce rule that all Img obj have iso=true
-          bugfix: context not restore for Img obj without a border       ARC
-  16Jul18 bugfix: img.height instead of img.imgHeight                    ARC 
-  19Jul18 Support offscreen canvases ie not a DOM element                ARC
-  21Jul18 Cango constructor accepts canvas element or its ID             ARC
-  22Jul18 Remove getUnique Cango method, use getUnique closure           ARC 
   ==========================================================================*/
 
 // exposed globals
@@ -64,14 +51,13 @@ var Cango,
     Path, Shape, Img, Text, ClipMask, Group,
     LinearGradient, RadialGradient, Tweener,
     initZoomPan,
-    shapeDefs;  // predefined geometric shapes
+    shapeDefs;  // predefined geometric shapes in Cgo2D format
 
 (function() {
   "use strict";
 
   var uniqueVal = 0,    // used to generate unique value for different Cango instances
-      identityMatrix = document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGMatrix(),
-      distortFns;
+      identityMatrix = document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGMatrix();
 
   const cvsCmds = { "M": "moveTo",
                     "L": "lineTo",
@@ -193,85 +179,101 @@ var Cango,
     e.push({type:0===t?"M":"L",values:[s.x,s.y]})}return e.push({type:"Z",values:[]}),e}}()
   }
 
-  var getUnique = function()
+  function addEvent(element, eventType, handler)
   {
-    uniqueVal += 1;     // a private static variable
-
-    return uniqueVal;
-  };
+    if (element.attachEvent)
+    {
+      return element.attachEvent('on'+eventType, handler);
+    }
+    return element.addEventListener(eventType, handler);
+  }
 
   function clone(orgItem)
   {
-    if (orgItem) return JSON.parse(JSON.stringify(orgItem));
-  }
+    var newItem, i;
 
-  if (shapeDefs === undefined)
-  {
-    shapeDefs = {
-      'circle': function(diameter){
-                  var d = diameter || 1;
-                  return ["m", -0.5*d,0,
-                  "c", 0,-0.27614*d, 0.22386*d,-0.5*d, 0.5*d,-0.5*d,
-                  "c", 0.27614*d,0, 0.5*d,0.22386*d, 0.5*d,0.5*d,
-                  "c", 0,0.27614*d, -0.22386*d,0.5*d, -0.5*d,0.5*d,
-                  "c", -0.27614*d,0, -0.5*d,-0.22386*d, -0.5*d,-0.5*d, "z"];
-                },
-
-      'ellipse': function(width, height){
-                  var w = width || 1,
-                      h = w;
-                  if ((typeof height === 'number')&&(height>0))
-                  {
-                    h = height;
-                  }
-                  return ["m", -0.5*w,0,
-                  "c", 0,-0.27614*h, 0.22386*w,-0.5*h, 0.5*w,-0.5*h,
-                  "c", 0.27614*w,0, 0.5*w,0.22386*h, 0.5*w,0.5*h,
-                  "c", 0,0.27614*h, -0.22386*w,0.5*h, -0.5*w,0.5*h,
-                  "c", -0.27614*w,0, -0.5*w,-0.22386*h, -0.5*w,-0.5*h, "z"];
-                },
-
-      'square': function(width){
-                  var w = width || 1;
-                  return ["m", 0.5*w, -0.5*w, "l", 0, w, -w, 0, 0, -w, "z"];
-                },
-
-      'rectangle': function(width, height, rad){
-                  var w = width || 1;
-                  var h = height || w;
-                  var r;
-                  if ((rad === undefined)||(rad<=0))
-                  {
-                    return ["m",-w/2,-h/2, "l",w,0, 0,h, -w,0, "z"];
-                  }
-                  r = Math.min(w/2, h/2, rad);
-                  return ["m", -w/2+r,-h/2, "l",w-2*r,0, "a",r,r,0,0,1,r,r, "l",0,h-2*r,
-                          "a",r,r,0,0,1,-r,r, "l",-w+2*r,0, "a",r,r,0,0,1,-r,-r, "l",0,-h+2*r,
-                          "a",r,r,0,0,1,r,-r, "z"];
-                },
-
-      'triangle': function(side){
-                  var s = side || 1;
-                  return ["m", 0.5*s, -0.289*s, "l", -0.5*s, 0.866*s, -0.5*s, -0.866*s, "z"];
-                },
-
-      'cross': function(width){
-                  var w = width || 1;
-                  return ["m", -0.5*w, 0, "l", w, 0, "m", -0.5*w, -0.5*w, "l", 0, w];
-                },
-
-      'ex': function(diagonal){
-                  var d = diagonal || 1;
-                  return ["m", -0.3535*d,-0.3535*d, "l",0.707*d,0.707*d,
-                          "m",-0.707*d,0, "l",0.707*d,-0.707*d];
-                }
-      };
+    if (orgItem === undefined)
+    {
+      return;
+    }
+    if (orgItem === null)
+    {
+      return null;
+    }
+    newItem = (Array.isArray(orgItem)) ? [] : {};
+    for (i in orgItem)
+    {
+      if (orgItem[i] && typeof orgItem[i] === "object")
+      {
+        newItem[i] = clone(orgItem[i]);
+      }
+      else
+      {
+        newItem[i] = orgItem[i];
+      }
+    }
+    return newItem;
   }
 
   function Path2DObj()
   {
     this.p2dWC = null;    // Path2D object with original svg cmds in world coordinates
     this.p2dPX = null;    // Path2D with coords scaled for canvas raw pixel coord system
+  }
+
+  if (shapeDefs === undefined)
+  {
+    shapeDefs = {'circle': function(diameter){
+                            var d = diameter || 1;
+                            return ["m", -0.5*d,0,
+                            "c", 0,-0.27614*d, 0.22386*d,-0.5*d, 0.5*d,-0.5*d,
+                            "c", 0.27614*d,0, 0.5*d,0.22386*d, 0.5*d,0.5*d,
+                            "c", 0,0.27614*d, -0.22386*d,0.5*d, -0.5*d,0.5*d,
+                            "c", -0.27614*d,0, -0.5*d,-0.22386*d, -0.5*d,-0.5*d, "z"];},
+
+                'ellipse': function(width, height){
+                            var w = width || 1,
+                                h = w;
+                            if ((typeof height === 'number')&&(height>0))
+                            {
+                              h = height;
+                            }
+                            return ["m", -0.5*w,0,
+                            "c", 0,-0.27614*h, 0.22386*w,-0.5*h, 0.5*w,-0.5*h,
+                            "c", 0.27614*w,0, 0.5*w,0.22386*h, 0.5*w,0.5*h,
+                            "c", 0,0.27614*h, -0.22386*w,0.5*h, -0.5*w,0.5*h,
+                            "c", -0.27614*w,0, -0.5*w,-0.22386*h, -0.5*w,-0.5*h, "z"];},
+
+                'square': function(width){
+                            var w = width || 1;
+                            return ["m", 0.5*w, -0.5*w, "l", 0, w, -w, 0, 0, -w, "z"];},
+
+                'rectangle': function(width, height, rad){
+                            var w = width || 1;
+                            var h = height || w;
+                            var r;
+                            if ((rad === undefined)||(rad<=0))
+                            {
+                              return ["m",-w/2,-h/2, "l",w,0, 0,h, -w,0, "z"];
+                            }
+                            r = Math.min(w/2, h/2, rad);
+                            return ["m", -w/2+r,-h/2, "l",w-2*r,0, "a",r,r,0,0,1,r,r, "l",0,h-2*r,
+                                    "a",r,r,0,0,1,-r,r, "l",-w+2*r,0, "a",r,r,0,0,1,-r,-r, "l",0,-h+2*r,
+                                    "a",r,r,0,0,1,r,-r, "z"];},
+
+                'triangle': function(side){
+                            var s = side || 1;
+                            return ["m", 0.5*s, -0.289*s, "l", -0.5*s, 0.866*s, -0.5*s, -0.866*s, "z"];},
+
+                'cross': function(width){
+                            var w = width || 1;
+                            return ["m", -0.5*w, 0, "l", w, 0, "m", -0.5*w, -0.5*w, "l", 0, w];},
+
+                'ex': function(diagonal){
+                            var d = diagonal || 1;
+                            return ["m", -0.3535*d,-0.3535*d, "l",0.707*d,0.707*d,
+                                    "m",-0.707*d,0, "l",0.707*d,-0.707*d];}
+                };
   }
 
   function Drag2D(grabFn, dragFn, dropFn)
@@ -321,10 +323,12 @@ var Cango,
         this.grabOfs = {x:csrPosWC.x - this.dwgOrg.x,
                         y:csrPosWC.y - this.dwgOrg.y};
       }
+
       if (this.grabCallback)
       {
         this.grabCallback(csrPosWC);    // call in the scope of dragNdrop object
       }
+
       topCvs.onmousemove = function(event){savThis.drag(event);};
       if (event.preventDefault)       // prevent default browser action (W3C)
       {
@@ -510,96 +514,99 @@ var Cango,
     m.f = 0;
   }
 
-  distortFns = {
-    TRN: function translater(args)      // will be called with 'this' pointing to an Obj2D
-    {
-      var x = args[0] || 0,
-          y = args[1] || 0;
-
-      if (this.hasOwnProperty('type'))    // this transformer may be called on point object {x:, y: }
-      {
-        this.ofsTfm = this.ofsTfm.translate(x, y);   
-      }
-      else     // its a point to be transformed
-      {
-        return {x:this.x + x, y:this.y + y};  // transformPoint returns an Object {x:, y: }
-      }
-    },
-    SCL: function scaler(args)      // will be called with 'this' pointing to an Obj2D
-    {
-      // scale matrix, applied before translate or revolve
-      var sx = args[0] || 1,
-          sy = args[1] || sx;
-
-      if (this.hasOwnProperty('type'))
-      {
-        this.ofsTfm = this.ofsTfm.scaleNonUniform(sx, sy);
-      }
-      else    // this transformer may be called on point object {x:, y: }
-      {
-        return {x:this.x*sx, y:this.y*sy};  // transfromPoint returns an Object {x:, y: }
-      }
-    },
-    ROT: function rotater(args)      // will be called with 'this' pointing to an Obj2D or point {x:, y: }
-    {
-      // rotate matrix, angles in degrees applied before translate or revolve
-      var angle = args[0] || 0,
-          rad = Math.PI/180.0,
-          s	= Math.sin(-angle*rad),
-          c	= Math.cos(-angle*rad);
-          
-      if (this.hasOwnProperty('type'))
-      {
-        this.ofsTfm = this.ofsTfm.rotate(angle);
-      }
-      else     // this transformer may be called on point object {x:, y: }
-      {
-        return {x:this.x*c + this.y*s, y:-this.x*s + this.y*c};  // transfromPoint returns an Object {x:, y: }
-      }
-    },
-    SKW: function skewer(args)
-    {
-      // Skew matrix, angles in degrees applied before translate or revolve
-      var ha = args[0] || 0,
-          va = args[1] || 0,
-          rad = Math.PI/180.0,
-          htn	= Math.tan(-ha*rad),
-          vtn	= Math.tan(va*rad);
-
-      if (this.hasOwnProperty('type'))    // this transformer may be called on point object {x:, y: }
-      {
-        this.ofsTfm = this.ofsTfm.skewX(ha*rad);
-        this.ofsTfm = this.ofsTfm.skewY(va*rad);
-      }
-      else
-      {
-        return {x:this.x + this.y*htn, y:this.x*vtn + this.y};  // transfromPoint returns an Object {x:, y: }
-      }
-    },
-    REV: function revolver(args)      // will be called with 'this' pointing to an Obj2D or point {x:, y: }
-    {
-      // Rotate matrix, angles in degrees can be applied after tranlation away from World Coord origin
-      var angle = args[0] || 0,
-          rad = Math.PI/180.0,
-          s	= Math.sin(-angle*rad),
-          c	= Math.cos(-angle*rad);
-
-      if (this.hasOwnProperty('type'))
-      {
-        this.ofsTfm = this.ofsTfm.rotate(angle*rad);
-      }
-      else  // point
-      {
-        return {x:this.x*c + this.y*s, y:-this.x*s + this.y*c};  // transfromPoint returns an Object {x:, y: }
-      }
-    }
-  };
-
-  function Distorter(type)  // and other arguments
+  function translater(args)      // will be called with 'this' pointing to an Obj2D
   {
-    var argAry = Array.prototype.slice.call(arguments).slice(1);     // skip type parameter save the rest
+    var x = args[0] || 0,
+        y = args[1] || 0;
+
+    if (this.hasOwnProperty('type'))    // this transformer may be called on point object {x:, y: }
+    {
+      this.ofsTfm = this.ofsTfm.translate(x, y);   
+    }
+    else     // its a point to be transformed
+    {
+      return {x:this.x + x, y:this.y + y};  // transformPoint returns an Object {x:, y: }
+    }
+  }
+
+  function skewer(args)
+  {
+    // Skew matrix, angles in degrees applied before translate or revolve
+    var ha = args[0] || 0,
+        va = args[1] || 0,
+        rad = Math.PI/180.0,
+				htn	= Math.tan(-ha*rad),
+				vtn	= Math.tan(va*rad);
+
+    if (this.hasOwnProperty('type'))    // this transformer may be called on point object {x:, y: }
+    {
+      this.ofsTfm = this.ofsTfm.skewX(ha*rad);
+      this.ofsTfm = this.ofsTfm.skewY(va*rad);
+    }
+    else
+    {
+      return {x:this.x + this.y*htn, y:this.x*vtn + this.y};  // transfromPoint returns an Object {x:, y: }
+    }
+  }
+
+  function scaler(args)      // will be called with 'this' pointing to an Obj2D
+  {
+    // scale matrix, applied before translate or revolve
+    var sx = args[0] || 1,
+        sy = args[1] || sx;
+
+    if (this.hasOwnProperty('type'))
+    {
+      this.ofsTfm = this.ofsTfm.scaleNonUniform(sx, sy);
+    }
+    else    // this transformer may be called on point object {x:, y: }
+    {
+      return {x:this.x*sx, y:this.y*sy};  // transfromPoint returns an Object {x:, y: }
+    }
+  }
+
+  function rotater(args)      // will be called with 'this' pointing to an Obj2D or point {x:, y: }
+  {
+    // rotate matrix, angles in degrees applied before translate or revolve
+    var angle = args[0] || 0,
+        rad = Math.PI/180.0,
+				s	= Math.sin(-angle*rad),
+        c	= Math.cos(-angle*rad);
+        
+    if (this.hasOwnProperty('type'))
+    {
+      this.ofsTfm = this.ofsTfm.rotate(angle);
+    }
+    else     // this transformer may be called on point object {x:, y: }
+    {
+      return {x:this.x*c + this.y*s, y:-this.x*s + this.y*c};  // transfromPoint returns an Object {x:, y: }
+    }
+  }
+
+  function revolver(args)      // will be called with 'this' pointing to an Obj2D or point {x:, y: }
+  {
+    // Rotate matrix, angles in degrees can be applied after tranlation away from World Coord origin
+    var angle = args[0] || 0,
+        rad = Math.PI/180.0,
+				s	= Math.sin(-angle*rad),
+				c	= Math.cos(-angle*rad);
+
+    if (this.hasOwnProperty('type'))
+    {
+      this.ofsTfm = this.ofsTfm.rotate(angle*rad);
+    }
+    else  // point
+    {
+      return {x:this.x*c + this.y*s, y:-this.x*s + this.y*c};  // transfromPoint returns an Object {x:, y: }
+    }
+  }
+
+  function Distorter(type, fn)  // and other arguments
+  {
+    var argAry = Array.prototype.slice.call(arguments).slice(2);     // skip type and fn parameters save the rest
 
     this.type = type;
+    this.distortFn = fn;
     this.args = argAry;     // array of arguments
   }
 
@@ -612,27 +619,27 @@ var Cango,
     // each method adds Distorter Object to the ofsTfmAry to be applied to the Obj2D when rendered
     this.translate = function(tx, ty)
     {
-      var trnsDstr = new Distorter("TRN", tx, ty);
+      var trnsDstr = new Distorter("TRN", translater, tx, ty);
       savThis.parent.ofsTfmAry.unshift(trnsDstr);
     };
     this.scale = function(scaleX, scaleY)
     {
-      var sclDstr = new Distorter("SCL", scaleX, scaleY);
+      var sclDstr = new Distorter("SCL", scaler, scaleX, scaleY);
       savThis.parent.ofsTfmAry.push(sclDstr);
     };
     this.rotate = function(deg)
     {
-      var rotDstr = new Distorter("ROT", deg);
+      var rotDstr = new Distorter("ROT", rotater, deg);
       savThis.parent.ofsTfmAry.push(rotDstr);
     };
     this.skew = function(degH, degV)
     {
-      var skwDstr = new Distorter("SKW", degH, degV);
+      var skwDstr = new Distorter("SKW", skewer, degH, degV);
       savThis.parent.ofsTfmAry.push(skwDstr);
     };
     this.revolve = function(deg)
     {
-      var revDstr = new Distorter("REV", deg);
+      var revDstr = new Distorter("REV", revolver, deg);
       savThis.parent.ofsTfmAry.unshift(revDstr);
     };
     this.reset = function()
@@ -651,22 +658,22 @@ var Cango,
     // each method adds Distorter Object to the hardTfmAry to be applied to the Obj2D when rendered
     this.translate = function(tx, ty)
     {
-      var trnsDstr = new Distorter("TRN", tx, ty);
+      var trnsDstr = new Distorter("TRN", translater, tx, ty);
       savThis.parent.hardTfmAry.unshift(trnsDstr);
     };
     this.scale = function(scaleX, scaleY)
     {
-      var sclDstr = new Distorter("SCL", scaleX, scaleY);
+      var sclDstr = new Distorter("SCL", scaler, scaleX, scaleY);
       savThis.parent.hardTfmAry.unshift(sclDstr);
     };
     this.rotate = function(deg)
     {
-      var rotDstr = new Distorter("ROT", deg);
+      var rotDstr = new Distorter("ROT", rotater, deg);
       savThis.parent.hardTfmAry.unshift(rotDstr);
     };
     this.skew = function(degH, degV)
     {
-      var skwDstr = new Distorter("SKW", degH, degV);
+      var skwDstr = new Distorter("SKW", skewer, degH, degV);
       savThis.parent.hardTfmAry.unshift(skwDstr);
     };
     this.reset = function()
@@ -997,10 +1004,10 @@ var Cango,
         this.bgFillColor = value;
         break;
       case "imgwidth":
-        this.imgWidth = Math.abs(value);
+        this.width = Math.abs(value);
         break;
       case "imgheight":
-        this.imgHeight = Math.abs(value);
+        this.height = Math.abs(value);
         break;
       case "lorg":
         if (lorgVals.indexOf(value) !== -1)
@@ -1088,15 +1095,12 @@ var Cango,
     }
     else if ((Array.isArray(commands)) && commands.length)  // array will be Cgo2D commands array
     {
-      svgPathElem = document.createElementNS("http://www.w3.org/2000/svg", "path");
       if (typeof(commands[0]) === "number")  // must be an Array of numbers
       {
-        svgPathElem.setAttribute("d", "M "+commands.join(" ")); // insert 'M' command so its valid SVG
+        commands.splice(0, 0, "M"); // add the "M" to start (remove none) so valid SVG
       }
-      else
-      {
-        svgPathElem.setAttribute("d", commands.join(" "));
-      }
+      svgPathElem = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      svgPathElem.setAttribute("d", commands.join(" "));
       this.drawCmds = svgPathElem.getPathData({normalize: true}); // returns segments converted to lines and Bezier curves 
     }
     // only options supported are 'iso' and 'fillRule'
@@ -1135,7 +1139,7 @@ var Cango,
     {
       // generate the hard tranform matrix if any transforms have been applied
       this.hardTfmAry.forEach(function(dtr){
-        distortFns[dtr.type].call(savThis, dtr.args);
+        dtr.distortFn.call(savThis, dtr.args);
       });
       // this.ofsTfm now hold the hard transform matrix
       thisDcs.forEach(function(cmd){
@@ -1159,7 +1163,7 @@ var Cango,
     {
       // generate the hard tranform matrix if any transforms have been applied
       obj.hardTfmAry.forEach(function(dtr){
-        distortFns[dtr.type].call(obj, dtr.args);
+        dtr.distortFn.call(obj, dtr.args);
       });
       // obj.ofsTfm now hold the hard transform matrix
       objDcs.forEach(function(cmd){
@@ -1322,7 +1326,6 @@ var Cango,
     Path.call(this, commands, options);
 
     this.type = "SHAPE";
-    this.clearFlag = false;  // private flag for clearShape method
     // only other difference is the default value for 'iso' property
     if (opt.hasOwnProperty("iso"))
     {
@@ -1357,21 +1360,11 @@ var Cango,
     {
       this.imgBuf = imgData;        // pre-loaded Image passed
     }
-    else if (imgData instanceof HTMLCanvasElement)
-    {
-      this.imgBuf = imgData;
-    }
-    else
-    {
-      console.error("Img data type unrecognised");
-    }
     this.pthCmds = new Path2DObj(); // Path2D holding the img bounding box
     this.drawCmds = [];             // DrawCmd array for the text or img bounding box
     this.width = 0;                   // only used for type = IMG, TEXT, set to 0 until image loaded
     this.height = 0;                  //     "
-    this.imgWidth = 0;                // user requested width in WC
-    this.imgHeight = 0;               // user requested height in WC
-    this.imgLorgX = 0;                // only used for type = IMG, TEXT, set to 0 until image loaded
+    this.imgLorgX = 0;                //     "
     this.imgLorgY = 0;                //     "
     this.lorg = 1;                    // used by IMG and TEXT to set drawing origin
     // properties set by setProperty method, if undefined render uses Cango default
@@ -1465,8 +1458,6 @@ var Cango,
     newObj.dashOffset = this.dashOffset;
     newObj.width = this.width;
     newObj.height = this.height;
-    newObj.imgWidth = this.imgWidth;
-    newObj.imgHeight = this.imgHeight;
     newObj.imgLorgX = this.imgLorgX;
     newObj.imgLorgY = this.imgLorgY;
     newObj.lorg = this.lorg;
@@ -1479,41 +1470,46 @@ var Cango,
     return newObj;         // return a object which inherits Obj2D properties
   };
 
-  Img.prototype.formatImg = function(cgo)
+  Img.prototype.formatImg = function()
   {
     var wid, hgt, wid2, hgt2,
-        wcAspectRatio = Math.abs(cgo.yscl/cgo.xscl),
         dx = 0,
         dy = 0,
         ulx, uly, llx, lly, lrx, lry, urx, ury,
-        lorgWC;
+        lorgWC,
+        cmdsAry;
 
-    this.iso = true;   // over-ride any iso=false (rotation fials with no-iso pics)
     if (!this.imgBuf.width)
     {
       console.log("in image onload handler yet image NOT loaded!");
     }
-    if (this.imgWidth && this.imgHeight)
+    if (this.width && this.height)
     {
-      wid = this.imgWidth;
-      hgt = this.imgHeight*wcAspectRatio;
+      wid = this.width;
+      hgt = this.height;
     }
-    else if (this.imgWidth && !this.imgHeight)  // width only passed height is auto
+    else if (this.width && !this.height)  // width only passed height is auto
     {
-      wid = this.imgWidth;
-      hgt = wid*this.imgBuf.height/this.imgBuf.width;  // keep aspect ratio, use x units
+      wid = this.width;
+      hgt = wid*this.imgBuf.height/this.imgBuf.width;  // default keep aspect ratio
     }
-    else if (this.imgHeight && !this.imgWidth)  // height only passed width is auto
+    else if (this.height && !this.width)  // height only passed width is auto
     {
-      hgt = this.imgHeight*wcAspectRatio;
-      wid = hgt*this.imgBuf.width/this.imgBuf.height;    // keep aspect ratio
+      hgt = this.height;
+      wid = hgt*this.imgBuf.width/this.imgBuf.height;    // default to keep aspect ratio
     }
     else    // no width or height default to natural size;
     {
       wid = this.imgBuf.width;    // default to natural width if none passed
-      hgt = wid*this.imgBuf.height/this.imgBuf.width;  // keep aspect ratio, use x units
+      if (this.iso)
+      {
+        hgt = wid*this.imgBuf.height/this.imgBuf.width;  // default keep aspect ratio;
+      }
+      else
+      {
+        hgt = this.imgBuf.height;  // let the natural height scale with world coords
+      }
     }
-
     wid2 = wid/2;
     hgt2 = hgt/2;
     lorgWC = [0, [0, 0],    [wid2, 0],   [wid, 0],
@@ -1528,7 +1524,7 @@ var Cango,
     this.imgLorgY = dy;
     this.width = wid;       // default to natural width if none passed
     this.height = hgt;      // default to natural height if none passed
-    // construct the draw cmds for the Img bounding box
+    // construct the cmdsAry for the Img bounding box
     ulx = dx;
     uly = dy;
     llx = dx;
@@ -1683,7 +1679,8 @@ var Cango,
         dx = 0,
         dy = 0,
         ulx, uly, llx, lly, lrx, lry, urx, ury,
-        fntScl;
+        fntScl,
+        cmdsAry;
 
     // support for zoom and pan
     if (!this.orgXscl)
@@ -1716,7 +1713,7 @@ var Cango,
     this.imgLorgX = dx;           // pixel offsets to drawing origin
     this.imgLorgY = dy-0.25*hgt;  // correct for alphabetic baseline, its offset about 0.25*char height
 
-    // construct the draw cmds for the text bounding box (world coords)
+    // construct the cmdsAry for the text bounding box (world coords)
     ulx = dx;
     uly = dy;
     llx = dx;
@@ -1993,7 +1990,7 @@ var Cango,
         var gc = pathObj.dragNdrop.cgo,
             ysl = (gc.yDown)? gc.xscl: -gc.xscl,
             hit,
-            WCtoPX = identityMatrix.translate(gc.vpOrgX+gc.xoffset, gc.vpOrgY+gc.yoffset)
+            WCtoPX = identityMatrix.translate(gc.vpOrgX+gc.xoffset, (gc.vpOrgY+gc.yoffset))
                                   .scaleNonUniform(gc.xscl, ysl)
                                   .multiply(pathObj.netTfm);
 
@@ -2013,12 +2010,12 @@ var Cango,
           gc.ctx[cvsCmds[dCmd.type]].apply(gc.ctx, dCmd.values); // add the path segment
         });
         hit = gc.ctx.isPointInPath(csrX, csrY);
-/* 
+ /*
   // for diagnostics on hit region, uncomment
   gc.ctx.strokeStyle = 'red';
   gc.ctx.lineWidth = (pathObj.type === 'TEXT')? 3: 3/gc.xscl;
   gc.ctx.stroke();
-*/ 
+ */
         gc.ctx.restore();
 
         return hit;
@@ -2052,7 +2049,7 @@ var Cango,
     savThis.cnvs.onmousedown = dragHandler;   // added to all layers but only top layer will catch events
   }
 
-  Cango = function(cvs)
+  Cango = function(canvasId)
   {
     var savThis = this,
         bkgId, bkgL;
@@ -2084,7 +2081,7 @@ var Cango,
       // check if canvas is resized when window -resized, allow some rounding error in layout calcs
       if ((Math.abs(w - savThis.rawWidth)/w < 0.01) && (Math.abs(h - savThis.rawHeight)/h < 0.01))
       {
-        // canvas size didn't change so return
+        // canvas size idin't change so return
         return;
       }
       // canvas has been resized so re0size all the overlay canvases
@@ -2100,10 +2097,10 @@ var Cango,
       // there may be multiple Cango contexts a layer, try to only fix actual canvas properties once
       if (savThis.bkgCanvas !== savThis.cnvs)
       {
-        return;
+        return undefined;
       }
-      savThis.cnvs.width = w;    // reset canvas pixels width
-      savThis.cnvs.height = h;   // don't use style for this
+      savThis.cnvs.setAttribute('width', w);    // reset canvas pixels width
+      savThis.cnvs.setAttribute('height', h);   // don't use style for this
       // step through the stack of canvases (if any)
       for (j=1; j<savThis.bkgCanvas.layers.length; j++)  // bkg is layer[0]
       {
@@ -2114,65 +2111,29 @@ var Cango,
           ovl.style.left = l+'px';
           ovl.style.width = w+'px';
           ovl.style.height = h+'px';
-          ovl.width = w;    // reset canvas attribute to pixel width
-          ovl.height = h;  
+          ovl.setAttribute('width', w);    // reset canvas pixels width
+          ovl.setAttribute('height', h);   // don't use style for this
         }
       }
     }
 
-    if ((typeof cvs === "string") && document.getElementById(cvs))   // element ID was passed
+    this.cId = canvasId;
+    this.cnvs = document.getElementById(canvasId);
+    if (this.cnvs === null)
     {
-      this.cnvs = document.getElementById(cvs);
-      this.cId = cvs;
-      if (!(this.cnvs instanceof HTMLCanvasElement))  // not a canavs
-      {
-        alert("element not a canvas");
-        return;
-      }
-      // check if this is a context for an overlay
-      if (this.cId.indexOf("_ovl_") !== -1)
-      {
-        this.cgoType = "OVL"; 
-        // this is an overlay. get a reference to the backGround canvas
-        bkgId = this.cId.slice(0, this.cId.indexOf("_ovl_"));
-        this.bkgCanvas = document.getElementById(bkgId);
-      }
-      else
-      {
-        this.cgoType = "BKG"; 
-        this.bkgCanvas = this.cnvs;
-      }
-      this.rawWidth = this.cnvs.offsetWidth;    // ignore attriute use the on screen pixel size
-      this.rawHeight = this.cnvs.offsetHeight;
+      alert("can't find canvas "+canvasId);
+      return undefined;
     }
-    else if (cvs instanceof HTMLCanvasElement)   // canvas element passed
+    this.bkgCanvas = this.cnvs;  // this is a background canvas so bkgCanvas points to itself
+    // check if this is a context for an overlay
+    if (canvasId.indexOf("_ovl_") !== -1)
     {
-      this.cnvs = cvs;
-      this.bkgCanvas = this.cnvs;
-      this.rawWidth = this.cnvs.width;
-      this.rawHeight = this.cnvs.height;
-      if (document.contains(cvs))  // element is part of the DOM
-      {
-        this.cId = this.cnvs.id;
-        this.cgoType = "BKG"; 
-        if (!this.cId)
-        {
-          this.cId = "_bkg_"+getUnique();
-          this.cnvs.id = this.cId;    // set the attribute to match new id
-        }
-      }
-      else  // off-screen canvas
-      {
-        this.cId = "_os_"+getUnique();  // over-ride any existing id
-        this.cgoType = "OS";     
-      }
+      // this is an overlay. get a reference to the backGround canvas
+      bkgId = canvasId.slice(0,canvasId.indexOf("_ovl_"));
+      this.bkgCanvas = document.getElementById(bkgId);
     }
-    else  // not a can vas element
-    {
-      alert("element not a canvas");
-      return;
-    }
-
+    this.rawWidth = this.cnvs.offsetWidth;
+    this.rawHeight = this.cnvs.offsetHeight;
     this.aRatio = this.rawWidth/this.rawHeight;
     this.widthPW = 100;                          // width of canvas in Percent Width Coords
     this.heightPW = 100/this.aRatio;    // height of canvas in Percent Width Coords
@@ -2184,10 +2145,7 @@ var Cango,
       bkgL = new Layer(this.cId, this.cnvs);
       this.bkgCanvas.layers[0] = bkgL;
       // make sure the overlay canvases always match the bkgCanvas size
-      if (this.cgoType !== "OS")
-      {
-        setResizeHandler(resizeLayers, 250);
-      }
+      setResizeHandler(resizeLayers, 250);
     }
     if ((typeof Timeline !== "undefined") && !this.bkgCanvas.hasOwnProperty('timeline'))
     {
@@ -2198,8 +2156,8 @@ var Cango,
     {
       // make canvas native aspect ratio equal style box aspect ratio.
       // Note: rawWidth and rawHeight are floats, assignment to ints will truncate
-      this.cnvs.width = this.rawWidth;    // reset canvas pixels width
-      this.cnvs.height = this.rawHeight;  // don't use style for this
+      this.cnvs.setAttribute('width', this.rawWidth);    // reset canvas pixels width
+      this.cnvs.setAttribute('height', this.rawHeight);  // don't use style for this
       this.cnvs.resized = true;
     }
     this.ctx = this.cnvs.getContext('2d');    // draw direct to screen canvas
@@ -2207,9 +2165,7 @@ var Cango,
     this.vpW = this.rawWidth;         // vp width in pixels (no more viewport so use full canvas)
     this.vpH = this.rawHeight;        // vp height in pixels, canvas height = width/aspect ratio
     this.vpOrgX = 0;                  // gridbox origin in pixels (upper left for SVG, the default)
-    this.vpOrgYsvg = 0;               // save vpOrgY, needed when switching between RHC and SVG and back
-    this.vpOrgYrhc = this.rawHeight;  //   "
-    this.vpOrgY = this.vpOrgYsvg;     // gridbox origin in pixels (upper left for SVG, the default)
+    this.vpOrgY = 0;                  // gridbox origin in pixels (upper left for SVG, the default)
     this.xscl = 1;                    // world x axis scale factor, default: pixels
     this.yscl = 1;                    // world y axis scale factor, +ve down (SVG style default)
     this.xoffset = 0;                 // world x origin offset from viewport left in pixels
@@ -2229,16 +2185,21 @@ var Cango,
     this.fontFamily = "Consolas, Monaco, 'Andale Mono', monospace";
     this.clipCount = 0;               // count ClipMask calls for use by resetClip
 
+    this.getUnique = function()
+    {
+      uniqueVal += 1;     // a private 'global'
+      return uniqueVal;
+    };
+
     initDragAndDrop(this);
   };
 
   Cango.prototype.animation = function(init, draw, path, options)
   {
     var animObj,
-    animId,
-    unique = getUnique();
+        animId;
 
-    animId = this.cId+"_"+unique;
+    animId = this.cId+"_"+this.getUnique();
     animObj = new AnimObj(animId, this, init, draw, path, options);
     // push this into the Cango animations array
     this.stopAnimation();   // make sure we are not still running an old animation
@@ -2454,9 +2415,7 @@ var Cango,
     this.vpH = height*this.rawWidth/100;
     // now calc upper left of viewPort in pixels = this is the vpOrg
     this.vpOrgX = left*this.rawWidth/100;
-    this.vpOrgYsvg = top*this.rawWidth/100;  // SVG vpOrg is up at the top left
-    this.vpOrgYrhc = this.vpOrgYsvg+this.vpH;// RHC vpOrg is down at the lower left
-    this.vpOrgY = this.vpOrgYsvg;            // SVG is the default
+    this.vpOrgY = top*this.rawWidth/100;     // SVG vpOrg is up at the top left
     this.yDown = true;                       // reset, both setWorldCoords needs this  
     this.setWorldCoordsSVG(); // if new gridbox created, world coords are garbage, so reset to defaults
   };
@@ -2465,7 +2424,7 @@ var Cango,
   {
     var savThis = this,
         newCol = fillColor || this.paintCol,
-        yCoord = this.vpOrgYsvg;
+        yCoord = (this.yDown)? this.vpOrgY: this.vpOrgY-this.vpH;
 
     function genLinGradient(lgrad)
     {
@@ -2514,9 +2473,12 @@ var Cango,
     var vpOrgXWC = vpOriginX || 0,  // gridbox upper left (vpOrgX) in world coords
         vpOrgYWC = vpOriginY || 0;  // gridbox upper left (vpOrgY) in world coords
 
-        this.yDown = true;              // flag true for SVG world coords being used
-        this.vpOrgY = this.vpOrgYsvg;   // switch vpOrg to upper left corner of gridbox
-        if (spanX && (spanX > 0))
+    if (!this.yDown)  // RHC coords being used, switch to SVG, must change to vpOrgY
+    {
+      this.vpOrgY -= this.vpH;  // switch vpOrg to upper left corner of gridbox
+      this.yDown = true;        // flag true for SVG world coords being used
+    }
+    if (spanX && (spanX > 0))
     {
       this.xscl = this.vpW/spanX;
     }
@@ -2540,12 +2502,16 @@ var Cango,
 
   Cango.prototype.setWorldCoordsRHC = function(vpOriginX, vpOriginY, spanX, spanY)
   {
+    // gridbox origin is upper left
     var vpOrgXWC = vpOriginX || 0,  // gridbox lower left (vpOrgX) in world coords
         vpOrgYWC = vpOriginY || 0;  // gridbox lower left (vpOrgY) in world coords
 
-        this.yDown = false;             // flag false for RHC world coords
-        this.vpOrgY = this.vpOrgYrhc;   // switch vpOrg to lower left corner of gridbox
-        if (spanX && (spanX > 0))
+    if (this.yDown)  // SVG coords being used, switch to RHC must change to vpOrgY
+    {
+      this.vpOrgY += this.vpH;  // switch vpOrg to lower left corner of gridbox
+      this.yDown = false;       // flag false for RHC world coords
+    }
+    if (spanX && (spanX > 0))
     {
       this.xscl = this.vpW/spanX;
     }
@@ -2674,7 +2640,7 @@ var Cango,
       var toIso;
       if (!obj.iso)
       {
-        toIso = new Distorter("SCL", 1, nonIsoScl);
+        toIso = new Distorter("SCL", scaler, 1, nonIsoScl);
         // apply the non-iso world coord scaling to the original y coords
         obj.netTfmAry.unshift(toIso);   // scale distorter will do the job
       }
@@ -2692,13 +2658,13 @@ var Cango,
         {
           // call the user distort fn to do the distorting now
           if (obj.iso)
-            distortFns[dtr.type].call(obj, [dtr.args[0], dtr.args[1]*nonIsoScl]);
+            dtr.distortFn.call(obj, [dtr.args[0], dtr.args[1]*nonIsoScl]);
           else
-            distortFns[dtr.type].call(obj, [dtr.args[0], dtr.args[1]]);
+            dtr.distortFn.call(obj, [dtr.args[0], dtr.args[1]]);  
         }
         else
         {
-          distortFns[dtr.type].call(obj, dtr.args);
+          dtr.distortFn.call(obj, dtr.args);
         }
       });
       obj.netTfm = obj.ofsTfm.multiply(obj.grpTfm); // apply inherited group Tfms
@@ -2734,7 +2700,7 @@ var Cango,
       // NB: hard Transforms don't move dwgOrg, they move the object relative to dwgOrg!
       obj.dwgOrg = {x:0, y:0};
       softTfmAry.forEach(function(dtr){
-        obj.dwgOrg = distortFns[dtr.type].call(obj.dwgOrg, dtr.args);
+        obj.dwgOrg = dtr.distortFn.call(obj.dwgOrg, dtr.args);
       });
     }
 
@@ -2767,20 +2733,20 @@ var Cango,
     {
       function imgLoaded()
       {
-        obj.formatImg(savThis);
+        obj.formatImg();
         genNetTfmMatrix(obj);
         savThis.paintImg(obj);
       }
 
       if (obj.type === "IMG")
       {
-        if (obj.imgBuf.complete || obj.imgBuf instanceof HTMLCanvasElement)    // see if already loaded
+        if (obj.imgBuf.complete)    // see if already loaded
         {
           imgLoaded();
         }
         else
         {
-          obj.imgBuf.addEventListener('load', imgLoaded);
+          addEvent(obj.imgBuf, 'load', imgLoaded);
         }
       }
       else if (obj.type === "TEXT")
@@ -2806,9 +2772,9 @@ var Cango,
    	  obj.transform.reset();
   	  if (obj.type === "GRP")
       {
-    	  obj.children.forEach(function(childNode){
-            iterativeReset(childNode);
-          });
+    	obj.children.forEach(function(childNode){
+  		  iterativeReset(childNode);
+  		});
       }
   	}
 
@@ -2881,6 +2847,7 @@ var Cango,
         ysl = (this.yDown)? this.xscl: -this.xscl,
         currLr, aidx,
         col, stkCol,
+        tp,
         WCtoPX = identityMatrix.translate(this.vpOrgX + this.xoffset, this.vpOrgY + this.yoffset)   //  viewport offset
                               .scaleNonUniform(this.xscl, ysl)     // world coords to pixels
                               .multiply(imgObj.netTfm);       // app transforms
@@ -2889,6 +2856,7 @@ var Cango,
     {
       WCtoPX = WCtoPX.flipY();  // invert all world coords values
     }            
+
     this.ctx.save();   // save raw canvas no transforms no dropShadow
     this.ctx.setTransform(WCtoPX.a, WCtoPX.b, WCtoPX.c, WCtoPX.d, WCtoPX.e, WCtoPX.f);
     this.dropShadow(imgObj);  // set up dropShadow if any
@@ -2927,8 +2895,8 @@ var Cango,
       // if properties are undefined use Cango default
       this.ctx.lineCap = imgObj.lineCap || this.lineCap;
       this.ctx.stroke();
+      this.ctx.restore();    // undo the stroke style etc
     }
-    this.ctx.restore();    // undo the stroke style etc
 
     if (imgObj.dragNdrop !== null)
     {
@@ -2960,6 +2928,7 @@ var Cango,
   {
     // used for type: PATH, SHAPE
     var savThis = this,
+        tp,
         ysl = (this.yDown)? this.xscl: -this.xscl,
         col, filCol, stkCol,
         currLr, aidx,
@@ -3007,17 +2976,7 @@ var Cango,
     if (pathObj.type === "SHAPE")
     {
       this.ctx.fillStyle = filCol;
-      if (pathObj.clearFlag)
-      {
-        this.ctx.save();   // save current context
-        this.ctx.globalCompositeOperation = "destination-out";  // clear the canvas in the shape of the pathObj
-        this.ctx.fill(pathObj.fillRule);
-        this.ctx.restore();
-      }
-      else
-      {
-        this.ctx.fill(pathObj.fillRule);
-      }
+      this.ctx.fill(pathObj.fillRule);
     }
     if ((pathObj.type === "PATH")|| pathObj.border)
     {
@@ -3084,6 +3043,7 @@ var Cango,
     }
 
     var savThis = this,
+        tp,
         ysl = (this.yDown)? this.xscl: -this.xscl,
         WCtoPX = identityMatrix.translate(this.vpOrgX+this.xoffset, (this.vpOrgY+this.yoffset))
                               .scaleNonUniform(this.xscl, ysl)
@@ -3098,7 +3058,7 @@ var Cango,
     maskObj.drawCmds.forEach(function(dCmd){
       savThis.ctx[cvsCmds[dCmd.type]].apply(savThis.ctx, dCmd.values); // add the path segment
     });
-    this.ctx.closePath();    // clip only works if path closed
+    this.ctx.closePath();    // clip only works if path colosed
     this.ctx.restore();  
     this.ctx.clip(maskObj.fillRule);
 
@@ -3300,54 +3260,25 @@ var Cango,
     this.render(imgObj);
   };
 
-  Cango.prototype.clearShape = function(pathDef, options)
-  {
-    // outline the same as fill color
-    var opts = options || {},
-        x = opts.x || 0,
-        y = opts.y || 0,
-        scl = opts.scl || 1,
-        degs = opts.degs || 0,
-        pathObj = new Shape(pathDef, options);
-
-    if (degs)
-    {
-      pathObj.transform.rotate(degs);
-    }
-    if (scl !== 1)
-    {
-      pathObj.transform.scale(scl);
-    }
-    if (x || y)
-    {
-      pathObj.transform.translate(x, y);
-    }
-    // set fillColor as tranparent
-    pathObj.fillCol = "rgba(0,0,0,1.0)"
-    // set the clear flag for paintShape
-    pathObj.clearFlag = true;
-    this.render(pathObj);
-  };
-
   Cango.prototype.createLayer = function()
   {
     var ovlHTML, newCvs,
         w = this.rawWidth,
         h = this.rawHeight,
-        unique = getUnique(), 
-        ovlId,
+        unique, ovlId,
         nLyrs = this.bkgCanvas.layers.length,  // bkg is layer 0 so at least 1
         newL,
         topCvs;
 
-    // do not create layers on overlays or offscreen canvases - only an background canvases
-    if (this.cgoType === "OVL" || this.cgoType === "OS")
+    // do not create layers on overlays - only an background canvases
+    if (this.cId.indexOf("_ovl_") !== -1)
     {
       // this is an overlay canvas - can't have overlays itself
-      console.log("offscreen canvases and layers cannot create layers");
+      console.log("canvas layers can't create layers");
       return "";
     }
 
+    unique = this.getUnique();
     ovlId = this.cId+"_ovl_"+unique;
     ovlHTML = "<canvas id='"+ovlId+"' style='position:absolute' width='"+w+"' height='"+h+"'></canvas>";
     topCvs = this.bkgCanvas.layers[nLyrs-1].cElem;  // eqv to this.cnvs.layers since only bkgCanavs can get here
@@ -3359,6 +3290,7 @@ var Cango,
     // make it the same size as the background canvas
     newCvs.style.width = this.bkgCanvas.offsetWidth+'px';
     newCvs.style.height = this.bkgCanvas.offsetHeight+'px';
+//    newCvs.style.pointerEvents = 'none';    // allow mouse events to pass down to bkgCanvas
     newL = new Layer(ovlId, newCvs);
     // save the ID in an array to facilitate removal
     this.bkgCanvas.layers.push(newL);
@@ -3418,8 +3350,6 @@ var Cango,
     this.yDown = src_graphCtx.yDown;      // set by setWorldCoordsRHC or setWorldCoordsSVG to signal coord system
     this.vpW = src_graphCtx.vpW;          // vp width in pixels
     this.vpH = src_graphCtx.vpH;          // vp height in pixels
-    this.vpOrgYsvg = src_graphCtx.vpOrgYsvg;  // needed when switching between RHC and SVG and back
-    this.vpOrgYrhc = src_graphCtx.vpOrgYrhc;  //   "
     this.vpOrgX = src_graphCtx.vpOrgX;    // vp lower left from canvas left in pixels
     this.vpOrgY = src_graphCtx.vpOrgY;    // vp lower left from canvas top
     this.xscl = src_graphCtx.xscl;        // world x axis scale factor
