@@ -6,7 +6,18 @@
 <h1>button</h1>
 <p></p>
 <p><button onclick="myFunction()">Try it</button></p>
-<p id="demo"></p>
+<pre class="brush:html;auto-links:false;toolbar:false" contenteditable="false">&lt;p&gt;&lt;button onclick="myFunction()"&gt;Try it&lt;/button&gt;&lt;/p&gt;
+&lt;p id="demo"&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;script&gt;
+function myFunction() {
+  document.getElementById("demo").innerHTML = Math.floor(Math.random()*51);
+}
+&lt;/script&gt;
+&lt;/p&gt;
+</pre>
+<p id="demo"><br/><br/></p>
+<p></p>
 <p>
 <script>
 function myFunction() {
