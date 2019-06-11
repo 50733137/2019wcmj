@@ -1,2 +1,24 @@
-siteTitle:CMSimfly - 動靜皆宜的簡潔網際內容管理
-password:c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3eab1d80b931dd472634dfac71cd34ebc35d16ab7fb8a90c81f975113d6c7538dc69dd8de9077ec
+ProxyCommand y:/PortableGit/mingw64/bin/connect.exe -H 
+#140.130.17.4:3128 %h %p
+   
+Host github.com
+User git
+Port 22
+Hostname github.com
+   
+IdentityFile "y:\home\.ssh\id_rsa_user1"
+   
+TCPKeepAlive yes
+IdentitiesOnly yes
+
+Host ssh.github.com
+User git
+Port 443
+Hostname ssh.github.com
+   
+IdentityFile "y:\home\.ssh\id_rsa_user1"
+   
+TCPKeepAlive yes
+IdentitiesOnly yes
+    
+    
